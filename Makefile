@@ -9,5 +9,8 @@ format:
 	python -m mypy ${PY_MODULE} --ignore-missing-imports
 
 
+perflint:
+	python -m perflint ${PY_MODULE}
+
 test:
 	python -m pytest ${TESTS} --asyncio-mode=auto -n auto

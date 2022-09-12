@@ -17,7 +17,7 @@ class Methods(str, Enum):
 
 
 @dc.dataclass(frozen=True, slots=True)
-class BaseClient:
+class BaseHTTPClient:
     """
     Base client
     """

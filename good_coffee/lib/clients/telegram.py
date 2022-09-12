@@ -3,15 +3,16 @@ import logging
 import typing as t
 from logging import Logger
 
-from .base import BaseClient, Methods
+from .base import BaseHTTPClient, Methods
 
 
 @dc.dataclass(frozen=True, slots=True)
-class TelegramClient(BaseClient):
+class TelegramClient:
+    http_client: BaseHTTPClient
     logger: Logger = dc.field(default=logging.getLogger(__name__))
 
     async def post(self, url: str, data: t.Mapping[str, t.Any]) -> t.Mapping[str, t.Any]:
-        response = await self.request(url=url, method=Methods.POST, data=data)
+        response = await self.http_client.request(url=url, method=Methods.POST, data=data)
 
         try:
             return response.json()

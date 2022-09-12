@@ -11,8 +11,6 @@ from ..dal.coffeshops import CoffeeShopRepository
 from ..serializers.keyboard import Button, Keyboard
 from ..serializers.telegram import Message
 
-logger = logging.getLogger(__name__)
-
 
 class TelegramMethods(str, Enum):
     SEND_MESSAGE = "sendMessage"
