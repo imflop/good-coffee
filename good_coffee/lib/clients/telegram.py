@@ -3,7 +3,7 @@ import logging
 import typing as t
 from logging import Logger
 
-from .base import BaseHTTPClient, Methods
+from .bases.http_client import BaseHTTPClient, Methods
 
 
 @dc.dataclass(frozen=True, slots=True)

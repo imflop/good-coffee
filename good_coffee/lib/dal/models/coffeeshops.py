@@ -43,3 +43,11 @@ class CoffeeShopModel(Base):
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     city = relationship(CityModel, back_populates="coffee_shops")
+
+    @property
+    def as_message(self) -> str:
+        return (
+            f"{self.instagram_url}\n"
+            f"{self.name}\n\n"
+            f"📍<a href='https://maps.google.com/maps?q={self.latitude},{self.longitude}'>Direction</a>"
+        )
