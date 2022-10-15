@@ -57,9 +57,9 @@ class BaseGeocoderClient:
     Base geocoder client over geopy library
     """
 
-    async def get_client(self) -> OSMGeocoderProto:
-        async with Nominatim(user_agent=self._get_user_agent(), adapter_factory=HttpxAsyncAdapter) as client:
-            return client
+    async def get_geocoder(self) -> OSMGeocoderProto:
+        async with Nominatim(user_agent=self._get_user_agent(), adapter_factory=HttpxAsyncAdapter) as geocoder:
+            return geocoder
 
     @staticmethod
     def _get_user_agent() -> str:

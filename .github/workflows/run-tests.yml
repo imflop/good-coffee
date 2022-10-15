@@ -1,0 +1,41 @@
+name: Run tests workflow
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  linting-and-testing-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Check python version
+        run: python --version
+      - name: Install poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/sdispater/poetry/${{ env.POETRY_VERSION }}/get-poetry.py > get-poetry.py \
+          && python get-poetry.py --version ${{ env.POETRY_VERSION }} -y \
+          && rm get-poetry.py
+        env:
+          POETRY_VERSION: 1.1.13
+      - name: Install dependencies
+        run: |
+          ${{ env.POETRY_BIN }} run pip install pip==${{ env.PIP_VERSION }} && ${{ env.POETRY_BIN }} install;
+        env:
+          POETRY_BIN: $HOME/.poetry/bin/poetry
+          PIP_VERSION: 22.0.4
+      - name: Run linters
+        run: |
+          make format
+      - name: Run tests
+        run: |
+          make test

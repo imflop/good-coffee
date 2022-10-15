@@ -1,11 +1,12 @@
-from random import randint
 from datetime import datetime
+from random import randint
 
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
 from sqlalchemy import orm
 
-from good_coffee.lib.dal.models.coffeeshops import CountryModel, CityModel, CoffeeShopModel
+from good_coffee.lib.dal.models.coffeeshops import (CityModel, CoffeeShopModel,
+                                                    CountryModel)
 
 Session = orm.scoped_session(orm.sessionmaker())
 
@@ -29,7 +30,7 @@ class CountryFactory(BaseFactory):
     class Meta:
         model = CountryModel
 
-    name = factory.Faker("country")
+    name = factory.Faker("pystr")
     slug_name = factory.Faker("pystr")
 
 
@@ -39,7 +40,6 @@ class CityFactory(BaseFactory):
 
     name = factory.Faker("city")
     slug_name = factory.Faker("pystr")
-    country_id = factory.Faker("pyint")
 
     country = factory.SubFactory(CountryFactory)
 

@@ -16,18 +16,6 @@ from ...lib.services.telegram import TelegramService
 router = APIRouter()
 
 
-@router.get("/debug-q", status_code=status.HTTP_200_OK)
-async def get_coffee_shop(
-    request: Request,
-    coffee_shop_id: int,
-    service: TelegramService = Depends(telegram_service_factory),
-    logger: Logger = Depends(loguru_factory),
-) -> str:
-    logger.info(f"Received request from: {request.client.host if request.client else None}")
-
-    return await service.get_coffee_shop(coffee_shop_id=coffee_shop_id)
-
-
 @router.get("/debug-coords", status_code=status.HTTP_200_OK)
 async def get_city_name(
     lat: float,

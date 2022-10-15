@@ -13,8 +13,6 @@ class CountryModel(Base):
     name = Column(String(512), unique=True)
     slug_name = Column(String(1024))
 
-    cities = relationship("CityModel", back_populates="country")
-
 
 class CityModel(Base):
     __tablename__ = "cities"
@@ -24,7 +22,7 @@ class CityModel(Base):
     slug_name = Column(String(1024))
     country_id = Column(Integer, ForeignKey("countries.id"), index=True)
 
-    country = relationship(CountryModel, back_populates="cities")
+    country = relationship(CountryModel)
     coffee_shops = relationship("CoffeeShopModel")
 
 

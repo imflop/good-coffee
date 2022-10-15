@@ -29,15 +29,10 @@ class TelegramService:
     repository: CoffeeShopRepository
     logger: Logger = dc.field(default=logging.getLogger(__name__))
 
-    async def get_coffee_shop(self, coffee_shop_id: int) -> str:
-        shop = await self.repository.get(coffee_shop_id)
-
-        return shop.name if shop else None
-
-    async def get_city(self, latitude: float, longitude: float) -> t.Any:
+    async def get_city(self, latitude: float, longitude: float) -> str:
         result = await self.geocoder.get_city(latitude, longitude)
 
-        return result.address.city
+        return result.address.city or result.address.municipality
 
     async def process_message(self, message: Message) -> None:
         if message.text == "/start":
@@ -48,7 +43,7 @@ class TelegramService:
             closest_coffee_shops = self.geo_service.find_closest(
                 coffee_shops, message.location.latitude, message.location.longitude
             )
-            await self.send_coffee_shops_list([closest_coffee_shops], message.chat.id)
+            await self.send_coffee_shops_list(closest_coffee_shops, message.chat.id)
         else:
             self.logger.info("Unknown command")
 
@@ -61,11 +56,9 @@ class TelegramService:
 
     async def send_coffee_shops_list(self, coffee_shops: t.Sequence[CoffeeShopModel], chat_id: int) -> None:
         data_to_sent = [
-            self._construct_sending_object(chat_id=chat_id, message=cs.as_message, keyboard=None)
-            for cs in coffee_shops
+            self._construct_sending_object(chat_id=chat_id, message=cs.as_message, keyboard=None) for cs in coffee_shops
         ]
-        tasks = [self._send_message(data) for data in data_to_sent]
-        await asyncio.gather(*tasks)
+        await asyncio.gather(*(self._send_message(data) for data in data_to_sent), return_exceptions=False)
 
     async def _send_message(self, sending_data: t.Mapping[str, t.Any]) -> None:
         # TODO: add retrie
@@ -74,9 +67,7 @@ class TelegramService:
         self.logger.debug(result)
 
     @staticmethod
-    def _construct_sending_object(
-        chat_id: int, message: str, keyboard: Keyboard | None
-    ) -> t.Mapping[str, t.Any]:
+    def _construct_sending_object(chat_id: int, message: str, keyboard: Keyboard | None) -> t.Mapping[str, t.Any]:
         return {
             "chat_id": chat_id,
             "text": message,

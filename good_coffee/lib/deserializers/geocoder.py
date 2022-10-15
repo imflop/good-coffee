@@ -8,18 +8,15 @@ class WiredCityName(Enum):
     NICOSIA_MUNICIPALITY = "Nicosia Municipality"
 
 
-def _wired_city_names() -> tuple:
-    return tuple(wcn.value for wcn in WiredCityName)
-
-
 class NormalCityName(str, Enum):
     NICOSIA = "Nicosia"
 
 
 class Address(BaseModel):
-    city: str
+    city: str | None
     country: str
     country_code: str
+    municipality: str
 
     @validator("city", pre=True)
     def wired_city_names(cls, v: t.Any) -> str:

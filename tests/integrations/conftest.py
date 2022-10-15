@@ -1,23 +1,22 @@
 import contextlib
 import time
 import uuid
-import pytest
-
 from pathlib import Path
 
 import psycopg2
+import pytest
 from docker import DockerClient
 from docker.errors import ImageNotFound
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
-from fastapi.testclient import TestClient
+
 from alembic.command import upgrade
 from alembic.config import Config
 
 from ..factory_boys import Session
-
 
 ROOT_DIR = Path(__file__).parent.parent.parent
 POSTGRES_IMAGE = "postgres:11.6-alpine"
@@ -84,7 +83,6 @@ def pg_container():
         "password": password,
         "db": db_name,
         "dsn": f"postgresql://{username}:{password}@{host}:{container_host_port}/postgres",
-        # "dsn": f"postgresql://{username}:{password}@{host}:{container_host_port}/{db_name}",
     }
 
     container.kill(signal=9)
@@ -148,21 +146,25 @@ def create_db(system_db, pg_conf, alembic_upgrade, template_db):
 
 
 @pytest.fixture()
-def engine(pg_conf):
+def async_engine(pg_conf):
     return create_async_engine(pg_conf["async_dsn"])
 
 
 @pytest.fixture()
-async def db(engine, create_db, pg_conf):
+def dbf(pg_conf):
     _engine = create_engine(
         f"postgresql://{pg_conf['user']}:{pg_conf['password']}@{pg_conf['host']}:{pg_conf['port']}/{pg_conf['db']}",
         poolclass=NullPool,
     )
     Session.configure(bind=_engine)
-
-    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    async with async_session() as session:
-        yield session
-
+    yield Session
     Session.close()
     Session.configure(engine=None)
+
+
+@pytest.fixture()
+async def db(create_db, async_engine):
+    async_session = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False, future=True)
+
+    async with async_session() as session:
+        yield session
