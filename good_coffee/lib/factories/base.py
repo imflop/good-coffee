@@ -2,8 +2,7 @@ import typing as t
 from logging import Logger
 
 from fastapi import Depends, Request
-from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
-                                    create_async_engine)
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from ..settings import LOGGER_KEY, SETTINGS_KEY, AppSettings

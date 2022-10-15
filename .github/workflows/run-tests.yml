@@ -29,9 +29,13 @@ jobs:
           POETRY_VERSION: 1.1.13
       - name: Install dependencies
         run: |
-          ${{ env.POETRY_BIN }} run pip install pip==${{ env.PIP_VERSION }} && ${{ env.POETRY_BIN }} install;
+          source ${{ env.POETRY_ENV }} \
+          && ${{ env.POETRY_BIN }} shell \
+          && ${{ env.POETRY_BIN }} run pip install pip==${{ env.PIP_VERSION }} \
+          && ${{ env.POETRY_BIN }} install
         env:
           POETRY_BIN: $HOME/.poetry/bin/poetry
+          POETRY_ENV: $HOME/.poetry/env
           PIP_VERSION: 22.0.4
       - name: Run linters
         run: |
