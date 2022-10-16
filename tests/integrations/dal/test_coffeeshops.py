@@ -10,14 +10,14 @@ def repository(db):
     return CoffeeShopRepository(db)
 
 
-async def test_get_coffee_shop(dbf, repository):
+async def test_get_coffee_shop(repository):
     coffee_shop = CoffeeShopFactory.create()
     result = await repository.get(coffee_shop.id)
 
     assert result.name == coffee_shop.name
 
 
-async def test_get_coffee_shops(dbf, repository):
+async def test_get_coffee_shops(repository):
     city = CityFactory.create()
     coffee_shops = CoffeeShopFactory.create_batch(2, city=city)
     result = await repository.get_coffee_shops(city.name)

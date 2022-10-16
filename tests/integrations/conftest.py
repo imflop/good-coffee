@@ -157,14 +157,26 @@ def dbf(pg_conf):
         poolclass=NullPool,
     )
     Session.configure(bind=_engine)
-    yield Session
-    Session.close()
-    Session.configure(engine=None)
+    try:
+        yield Session
+    finally:
+        Session.close()
+        Session.remove()
+        Session.configure(engine=None)
+        _engine.dispose()
 
 
 @pytest.fixture()
-async def db(create_db, async_engine):
-    async_session = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False, future=True)
+async def db(create_db, pg_conf, async_engine):
+    _engine = create_engine(
+        f"postgresql://{pg_conf['user']}:{pg_conf['password']}@{pg_conf['host']}:{pg_conf['port']}/{pg_conf['db']}",
+        poolclass=NullPool,
+    )
+    Session.configure(bind=_engine)
 
+    async_session = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False, future=True)
     async with async_session() as session:
         yield session
+
+    Session.close()
+    Session.configure(engine=None)
