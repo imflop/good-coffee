@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import typing as t
+
 from pydantic import BaseModel
 
 
 class Common(BaseModel):
     id: int
-    first_name: str
-    last_name: str
+    first_name: str | None
+    last_name: str | None
     username: str
 
 
@@ -24,6 +26,12 @@ class Location(BaseModel):
     longitude: float
 
 
+class Entities(BaseModel):
+    offset: int
+    length: int
+    type: str
+
+
 class Message(BaseModel):
     message_id: int
     message_from: From
@@ -31,6 +39,7 @@ class Message(BaseModel):
     date: int
     text: str | None
     location: Location | None
+    entities: t.Sequence[Entities] | None
 
     class Config:
         fields = {"message_from": "from"}

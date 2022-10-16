@@ -1,0 +1,50 @@
+name: Run tests workflow
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  linting-and-testing-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Check python version
+        run: python --version
+      - name: Cache poetry install
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-${{ env.POETRY_VERSION }}-0
+        env:
+          POETRY_VERSION: 1.1.13
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+        env:
+          POETRY_VERSION: 1.1.13
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - name: Install project
+        run: poetry install --no-interaction
+      - name: Run tests
+        run: poetry run pytest -n auto

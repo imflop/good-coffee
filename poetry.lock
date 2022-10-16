@@ -222,6 +222,24 @@ trio = ["trio (>=0.14,<0.20)"]
 wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
+name = "docker"
+version = "6.0.0"
+description = "A Python library for the Docker Engine API."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+packaging = ">=14.0"
+pywin32 = {version = ">=304", markers = "sys_platform == \"win32\""}
+requests = ">=2.26.0"
+urllib3 = ">=1.26.0"
+websocket-client = ">=0.32.0"
+
+[package.extras]
+ssh = ["paramiko (>=2.4.3)"]
+
+[[package]]
 name = "email-validator"
 version = "1.2.1"
 description = "A robust email syntax and deliverability validation library."
@@ -251,6 +269,21 @@ description = "Get the currently executing AST node of a frame, and other inform
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "factory-boy"
+version = "3.2.1"
+description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Faker = ">=0.7.0"
+
+[package.extras]
+dev = ["coverage", "django", "flake8", "isort", "pillow", "sqlalchemy", "mongoengine", "wheel (>=0.32.0)", "tox", "zest.releaser"]
+doc = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
@@ -302,6 +335,34 @@ python-versions = ">=3.6.1"
 mccabe = ">=0.7.0,<0.8.0"
 pycodestyle = ">=2.9.0,<2.10.0"
 pyflakes = ">=2.5.0,<2.6.0"
+
+[[package]]
+name = "geographiclib"
+version = "1.52"
+description = "The geodesic routines from GeographicLib"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "geopy"
+version = "2.2.0"
+description = "Python Geocoding Toolbox"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+geographiclib = ">=1.49,<2"
+
+[package.extras]
+timezone = ["pytz"]
+requests = ["requests (>=2.16.2)", "urllib3 (>=1.24.2)"]
+dev-test = ["sphinx", "pytest (>=3.10)", "pytest-aiohttp", "coverage", "async-generator"]
+dev-lint = ["isort (>=5.6.0,<5.7.0)", "flake8 (>=3.8.0,<3.9.0)", "async-generator"]
+dev-docs = ["sphinx-rtd-theme (>=0.5.0)", "sphinx-issues", "sphinx", "readme-renderer"]
+dev = ["sphinx-rtd-theme (>=0.5.0)", "sphinx-issues", "sphinx", "readme-renderer", "pytest (>=3.10)", "pytest-aiohttp", "isort (>=5.6.0,<5.7.0)", "flake8 (>=3.8.0,<3.9.0)", "coverage", "async-generator"]
+aiohttp = ["aiohttp"]
 
 [[package]]
 name = "greenlet"
@@ -914,6 +975,14 @@ python-versions = "*"
 six = ">=1.4.0"
 
 [[package]]
+name = "pywin32"
+version = "304"
+description = "Python for Window Extensions"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -1175,6 +1244,19 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "websocket-client"
+version = "1.4.1"
+description = "WebSocket client for Python with low level API options"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+test = ["websockets"]
+optional = ["wsaccel", "python-socks"]
+docs = ["sphinx-rtd-theme (>=0.5)", "Sphinx (>=3.4)"]
+
+[[package]]
 name = "websockets"
 version = "10.3"
 description = "An implementation of the WebSocket Protocol (RFC 6455 & 7692)"
@@ -1204,7 +1286,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "30818d1def595198f4f1caf2cd1781f199981708c334b88522cdeab176044c95"
+content-hash = "0ed15d34b8af821e8f78309f51c0743b61119a5c89ef8b81a29bfd824881f1b9"
 
 [metadata.files]
 alembic = []
@@ -1225,12 +1307,16 @@ coverage = []
 decorator = []
 dill = []
 dnspython = []
+docker = []
 email-validator = []
 execnet = []
 executing = []
+factory-boy = []
 faker = []
 fastapi = []
 flake8 = []
+geographiclib = []
+geopy = []
 greenlet = []
 h11 = [
     {file = "h11-0.12.0-py3-none-any.whl", hash = "sha256:36a3cb8c0a032f56e2da7084577878a035d3b61d104230d4bd49c0c6b555a9c6"},
@@ -1310,6 +1396,7 @@ python-dotenv = []
 python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
+pywin32 = []
 pyyaml = []
 requests = []
 rfc3986 = [
@@ -1355,6 +1442,7 @@ uvloop = [
 ]
 watchgod = []
 wcwidth = []
+websocket-client = []
 websockets = []
 win32-setctime = []
 wrapt = []

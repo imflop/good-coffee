@@ -10,6 +10,10 @@ import httpx
 
 
 class Methods(str, Enum):
+    """
+    Common http methods
+    """
+
     GET = "GET"
     POST = "POST"
     PUT = "PUT"
@@ -17,9 +21,9 @@ class Methods(str, Enum):
 
 
 @dc.dataclass(frozen=True, slots=True)
-class BaseClient:
+class BaseHTTPClient:
     """
-    Base client
+    Base http client over httpx library
     """
 
     logger: Logger = dc.field(default=logging.getLogger(__name__))
@@ -50,7 +54,7 @@ class BaseClient:
                 url=url,
                 params=params,
                 json=json,
-                data=data,
+                data=t.cast(dict, data),
             )
 
     async def _log_request(self, request: httpx.Request) -> None:

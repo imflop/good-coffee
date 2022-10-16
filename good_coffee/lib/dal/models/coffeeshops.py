@@ -13,8 +13,6 @@ class CountryModel(Base):
     name = Column(String(512), unique=True)
     slug_name = Column(String(1024))
 
-    cities = relationship("CityModel", back_populates="country")
-
 
 class CityModel(Base):
     __tablename__ = "cities"
@@ -24,7 +22,7 @@ class CityModel(Base):
     slug_name = Column(String(1024))
     country_id = Column(Integer, ForeignKey("countries.id"), index=True)
 
-    country = relationship(CountryModel, back_populates="cities")
+    country = relationship(CountryModel)
     coffee_shops = relationship("CoffeeShopModel")
 
 
@@ -43,3 +41,11 @@ class CoffeeShopModel(Base):
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     city = relationship(CityModel, back_populates="coffee_shops")
+
+    @property
+    def as_message(self) -> str:
+        return (
+            f"{self.instagram_url}\n"
+            f"{self.name}\n\n"
+            f"📍<a href='https://maps.google.com/maps?q={self.latitude},{self.longitude}'>Direction</a>"
+        )

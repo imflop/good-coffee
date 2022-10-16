@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from .models.coffeeshops import CoffeeShopModel
+from .models.coffeeshops import CityModel, CoffeeShopModel
 
 
 @dc.dataclass(frozen=True, repr=False, slots=True)
@@ -24,3 +24,16 @@ class CoffeeShopRepository:
         row = result.fetchone()
 
         return row[CoffeeShopModel] if row else None
+
+    async def get_coffee_shops(self, city_name: str) -> list[CoffeeShopModel]:
+        stmt = (
+            select(CoffeeShopModel)
+            .join(CityModel)
+            .options(selectinload(CoffeeShopModel.city))
+            .where(CityModel.name.ilike(city_name))
+        )
+
+        result = await self.db.execute(stmt)
+        rows = result.all()
+
+        return [row[CoffeeShopModel] for row in rows]

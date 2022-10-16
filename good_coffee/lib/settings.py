@@ -24,7 +24,7 @@ class AppSettings(BaseAppSettings):
     sentry_dsn: t.Optional[str] = Field(None, env="sentry_dsn", help="Sentry DSN")
 
     database_dsn: PostgresDsn = Field(
-        "postgresql+asyncpg://user:password@host:5432/db",
+        ...,
         env="database_dsn",
         help="Database DSN",
     )
